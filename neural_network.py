@@ -44,10 +44,10 @@ def mse(prognozy,prawdziwe_wartosci):
     lista_bledow = []
     czy_lista_list = ( isinstance(prawdziwe_wartosci,list) and isinstance(prawdziwe_wartosci[0],list))
     if not czy_lista_list:
-        lista_prawdziwe = [[x] for x in prawdziwe_wartosci]
+        lista_prawdziwe = [[x] for x in prawdziwe_wartosci] # zmiana z listy na liste liist zeby sie zgadzalo z tym co jest na wejsicu
     else:
         lista_prawdziwe = prawdziwe_wartosci
     lista_bledow = [[(x-y)**2 for x,y in zip(prog,wart)] for prog,wart in zip(prognozy,lista_prawdziwe)]
-    suma = sum([element for podlista in lista_bledow for element in podlista])
+    suma = sum([element for podlista in lista_bledow for element in podlista]) # zmiana z listy list zeby uzyc sum
     calkowita_liczba_wartosci = sum(len(prog) for prog in prognozy)
     return suma/calkowita_liczba_wartosci
