@@ -1,23 +1,44 @@
-import pandas as pd 
+from neural_network import *
+
 
 df = pd.read_csv('test1.csv')
+dane_wejsciowe= df.drop("cena", axis=1).values.tolist()
+ceny = df['cena']
 
-def relu(x):
-    return max(0,x)
-def neuron(wejscie,wagi,bias,funkcja_akt):
-    if isinstance(wejscie,(list ,pd.Series,pd.DataFrame)):
-        wyjscie = sum(w * e for w, e in zip(wagi, wejscie)) + bias
-    if isinstance(wejscie, (int,float)):
-        wyjscie = (wejscie * wagi)+bias
-    return funkcja_akt(wyjscie) 
+dane_z_warstwy1 = []
+dane_z_warstwy2 = []
+dane_z_warstwy3 = []
 
-df = pd.read_csv('test1.csv')
-wejscie = [[1,2,3,4],[1,2,3,4],[1,2,3,4]]
-wagi = [[5,2,3,2,4],[3,2,2,4,5]]
-biasy = [3,4,5,6,7]
+wagi1 = stworz_wagi(dane_wejsciowe,3)
+biasy1 = stworz_biasy(3)
+for wiersze in dane_wejsciowe:
+    jeden_dom = warstwa(wiersze,wagi1,biasy1,relu)
+    dane_z_warstwy1.append(jeden_dom)
 
+print("Wagi: ", wagi1)
+print("Biasy: ", biasy1)
+print("pierwsza warstwa ukryta: ",dane_z_warstwy1)
 
-comp = [neuron(data,w,b,relu) for data,w,b in zip(wejscie,wagi,biasy)]
+wagi2 = stworz_wagi(dane_z_warstwy1,2)
+biasy2 = stworz_biasy(2)
 
+for wiersze2 in dane_z_warstwy1:
+    jeden_dom2 = warstwa(wiersze2,wagi2,biasy2,relu)
+    dane_z_warstwy2.append(jeden_dom2)
 
-print(comp)
+print("\nWagi: ", wagi2)
+print("Biasy: ", biasy2)
+print("Druga warstwa ukryta: ",dane_z_warstwy2)
+
+wagi3 = stworz_wagi(dane_z_warstwy2,1)
+biasy3 = stworz_biasy(1)
+
+for wiersze3 in dane_z_warstwy2:
+    jeden_dom3 = warstwa(wiersze3,wagi3,biasy3,relu)
+    dane_z_warstwy3.append(jeden_dom3)
+
+print("\nWagi: ", wagi3)#print("Biasy: ", biasy3)
+print("Wynik koncowy: ",dane_z_warstwy3)
+
+bledy = mse(dane_z_warstwy3,ceny)
+print("Błąd mse: ",bledy)
