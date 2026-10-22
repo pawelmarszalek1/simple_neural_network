@@ -1,7 +1,7 @@
 import random
 import pandas as pd 
 import math
-from functools import reduce
+
 
 #-------------|
 # FORWARD PASS|
