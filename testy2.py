@@ -45,14 +45,18 @@ wagi3 = stworz_wagi(
 biasy3 = stworz_biasy(1)
 
 # Parametry treningowe
-wspolczynnik_uczenia = 0.01
-liczba_epok = 11
+wspolczynnik_uczenia = 0.4
+liczba_epok = 500
+
+lr = wspolczynnik_uczenia
+lr_zmniejszanie = 0.9
+zmniejszanie_co = 20
 
 print(f'liczna epok: {liczba_epok}\nwspolczynnik uczenia: {wspolczynnik_uczenia}')
 print('--- START TRENINGU NA CALIFORNIA HOUSING ---')
 
 # Pętla epok (uczenia)
-for epoka in range(liczba_epok):
+for epoka in range(liczba_epok+1):
   wyniki_koncowe = []
 
   for i in range(len(dane_wejsciowe)):
@@ -60,9 +64,9 @@ for epoka in range(liczba_epok):
     prawdziwa_cena = ceny[i]
 
     # --- A. FORWARD PASS (Zbieramy z oraz a) ---
-    z1, a1 = warstwa(wiersz, wagi1, biasy1, relu)
-    z2, a2 = warstwa(a1, wagi2, biasy2, relu)
-    z3, a3 = warstwa(a2, wagi3, biasy3, relu)
+    z1, a1 = warstwa(wiersz, wagi1, biasy1, leaky_relu)
+    z2, a2 = warstwa(a1, wagi2, biasy2, leaky_relu)
+    z3, a3 = warstwa(a2, wagi3, biasy3, leaky_relu)
 
     wyniki_koncowe.append(a3)
 
@@ -71,8 +75,8 @@ for epoka in range(liczba_epok):
     blad3 = [a3[0] - prawdziwa_cena]
 
     # Cofamy błąd przez warstwy, podając uniwersalną funkcję pochodną
-    blad2 = cofaj_blad(blad3, wagi3, z2, pochodna_relu)
-    blad1 = cofaj_blad(blad2, wagi2, z1, pochodna_relu)
+    blad2 = cofaj_blad(blad3, wagi3, z2, pochodna_leaky_relu)
+    blad1 = cofaj_blad(blad2, wagi2, z1, pochodna_leaky_relu)
 
     # --- C. AKTUALIZACJA WAG I BIASÓW ---
     wagi3 = aktualizuj_wagi(a2, wagi3, blad3, wspolczynnik_uczenia)
@@ -89,6 +93,9 @@ for epoka in range(liczba_epok):
 
   if epoka % 5 == 0:
     print(f'Epoka {epoka} | Błąd MSE (znormalizowany): {aktualny_mse:.6f}')
+  if epoka % zmniejszanie_co == 0:
+        lr = lr * lr_zmniejszanie
+        print(f"Epoka {epoka}: Zmniejszono LR do {lr:.5f}")
 
 print('\n--- KONIEC TRENINGU ---')
 print('Przykładowe porównanie prognoz z rzeczywistością (pierwsze 5 domów):')

@@ -49,7 +49,7 @@ def warstwa(wejscie, wagi_warstwy, bias, funkcja_akt):
 
 def stworz_wagi(dane_wejscia,liczba_neuronow):
     liczba_wag = len(dane_wejscia[0])
-    wagi = [[random.uniform(-1,1) for _ in range (liczba_wag)] for _ in range(liczba_neuronow)]
+    wagi = [[random.uniform(0.1,1) for _ in range (liczba_wag)] for _ in range(liczba_neuronow)]
     return wagi
 
 def stworz_biasy(liczba_neuronow):
