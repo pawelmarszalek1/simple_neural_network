@@ -33,19 +33,18 @@ def leaky_relu(x, alpha=0.01):
     return max(alpha * x, x)
 
 def neuron(wejscie, wagi, bias, funkcja_aktywacji):
-  z = sum(w * e for w, e in zip(wagi, wejscie)) + bias
-  a = funkcja_aktywacji(z)
-  return z, a  # tu zmiana na zwracanie pary z - czysta suma, a aktywacja
+    z = sum(w * e for w, e in zip(wagi, wejscie)) + bias
+    a = funkcja_aktywacji(z)
+    return z, a  # tu zmiana na zwracanie pary z - czysta suma, a aktywacja
 
 
 def warstwa(wejscie, wagi_warstwy, bias, funkcja_akt):
-  z_lista = []
-  a_lista = []
-  for w, b in zip(wagi_warstwy, bias):
-    z, a = neuron(wejscie, w, b, funkcja_akt)
-    z_lista.append(z)
-    a_lista.append(a)
-  return z_lista, a_lista # tu to samo co w neuronie zwraca pare listy 
+    wyniki = [neuron(wejscie, w, b, funkcja_akt) for w, b in zip(wagi_warstwy, bias)]
+
+    z_lista = [z for z, a in wyniki]
+    a_lista = [a for z, a in wyniki]
+
+    return z_lista, a_lista # tu to samo co w neuronie zwraca pare listy 
 
 def stworz_wagi(dane_wejscia,liczba_neuronow):
     liczba_wag = len(dane_wejscia[0])
@@ -101,18 +100,18 @@ def pochodna_leaky_relu(x, alpha=0.01):
     return 1.0 if x > 0 else alpha
 
 def cofaj_blad(blad_nastepny, wagi_nastepne, z_obecne,funkcja_pochodna):
-  liczba_neuronow_obecnych = len(z_obecne)
-  blad_obecny = []
+    liczba_neuronow_obecnych = len(z_obecne)
+    blad_obecny = []
 
-  for j in range(liczba_neuronow_obecnych):
-    suma = 0
-    for i in range(len(blad_nastepny)):
-      suma += blad_nastepny[i] * wagi_nastepne[i][j]
+    for j in range(liczba_neuronow_obecnych):
+        suma = 0
+        for i in range(len(blad_nastepny)):
+            suma += blad_nastepny[i] * wagi_nastepne[i][j]
 
     pochodna = funkcja_pochodna(z_obecne[j])
     blad_obecny.append(suma * pochodna)
 
-  return blad_obecny
+    return blad_obecny
         
 def minmax(df):
     norm = (df-df.min())/(df.max()-df.min())
@@ -121,3 +120,7 @@ def minmax(df):
 def odwroc_minmax(wartosci_normalizowane,orginalne_min,orginalne_max):
     orinalne = wartosci_normalizowane * (orginalne_max-orginalne_min) + orginalne_min
     return orinalne
+
+
+def train_test_split(dane,etykiety,test=0.2,ziarno=None):
+    pass
