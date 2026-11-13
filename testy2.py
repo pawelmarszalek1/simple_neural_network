@@ -93,13 +93,13 @@ for epoka in range(liczba_epok+1):
 
   if epoka % 5 == 0:
     print(f'Epoka {epoka} | Błąd MSE (znormalizowany): {aktualny_mse:.6f}')
-  if epoka % zmniejszanie_co == 0:
+  if epoka % zmniejszanie_co == 0 and epoka != 0:
         lr = lr * lr_zmniejszanie
         print(f"Epoka {epoka}: Zmniejszono LR do {lr:.5f}")
 
 print('\n--- KONIEC TRENINGU ---')
-print('Przykładowe porównanie prognoz z rzeczywistością (pierwsze 5 domów):')
-for i in range(min(5, len(wyniki_koncowe))):
+print('Przykładowe porównanie prognoz z rzeczywistością (pierwsze 10 domów):')
+for i in range(min(10, len(wyniki_koncowe))):
   prognoza_norm = wyniki_koncowe[i][0]
   prawdziwa_norm = ceny[i]
 

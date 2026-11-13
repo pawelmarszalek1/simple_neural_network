@@ -2,25 +2,34 @@ from neural_network import *
 
 
 df = pd.read_csv('test1.csv')
-dane_wejsciowe= df.drop("cena", axis=1).values.tolist()
+dane_wejsciowe= df.drop("cena", axis=1)#.values.tolist()
 ceny = df['cena']
 
-wyniki = []
 
-w = [0.1,0.2,0.001,0.1]
-w1 = stworz_wagi(dane_wejsciowe,1)
+X_train, X_test, y_train, y_test = train_test_split(dane_wejsciowe,ceny,test=0.2,ziarno=42)
 
-print('wagi ',w1)
+X_min = X_train.min()
+X_max = X_train.max()
 
-print(neuron(dane_wejsciowe[0],w,0,relu))
+X_train_norm = minmax(X_train, X_min, X_max)
+X_test_norm = minmax(X_test, X_min, X_max)
 
-for wiersze in dane_wejsciowe:
-    z,a=warstwa(wiersze,w1,[1],leaky_relu)
-    wyniki.append(a)
-    print(f'Dane: {wiersze}, wagi: {w1}, wynik: {a}')
+X_train_list = X_train_norm.values.tolist()
+X_test_norm = X_test_norm.values.tolist()
 
+wagi = stworz_wagi(X_train_list,1)
+bias = stworz_biasy(1)
 
-funkcja_straty = mse(wyniki,ceny)
+#z1, a1 = neuron(X_train_list[0],wagi,bias,relu)
 
-print(funkcja_straty)
+print(X_train_list)
+print(bias)
+print(wagi)
 
+#print(z1)
+
+x = [[3,2,4][1,3,1],[7,1,2],[1,2,3]]
+w = [3,2,5]
+y = [35,17,35,26]
+
+print(len(x))
